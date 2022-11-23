@@ -28,7 +28,6 @@ struct MusicService {
                     do {
                         let music = try JSONDecoder().decode(Music.self, from: safeData)
                         completion(.success(music))
-                        print(music)
                     } catch {
                         print(error.localizedDescription)
                     }
