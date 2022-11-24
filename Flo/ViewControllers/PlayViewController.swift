@@ -12,6 +12,7 @@ class PlayViewController: UIViewController {
     
     var music: Music?
     var viewModel = MusicViewModel()
+    let imageConfig = UIImage.SymbolConfiguration(pointSize: 30)
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -56,6 +57,7 @@ class PlayViewController: UIViewController {
         let slider = UISlider()
         slider.setThumbImage(UIImage(), for: .normal)
         slider.minimumTrackTintColor = #colorLiteral(red: 0.1411764706, green: 0.01176470611, blue: 0.8360022396, alpha: 1)
+        slider.addTarget(self, action: #selector(moveSlider), for: .touchUpInside)
         return slider
     }()
     
@@ -78,7 +80,11 @@ class PlayViewController: UIViewController {
     
     private let playButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "play.fill"), for: .normal)
+        button.tintColor = .black
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 30)
+        let image = UIImage(systemName: "pause.fill", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.addTarget(self, action: #selector(playMusic), for: .touchUpInside)
         return button
     }()
     
@@ -87,6 +93,38 @@ class PlayViewController: UIViewController {
         view.backgroundColor = .white
         configureUI()
         setupBinders()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        addObserverToPlayer()
+//        playButton.isSelected = viewModel.isPlay
+    }
+    
+    // UISlider
+    @objc func moveSlider(_ sender: UISlider) {
+        let seconds = Double(sender.value)
+        
+        currentTimeLbl.text = viewModel.currentTimeText
+        if sender.isTracking {
+            return
+        } else {
+            viewModel.player.seek(to: CMTime(seconds: seconds, preferredTimescale: 100))
+        }
+    }
+    
+    // 음악 재생 버튼 클릭시 이벤트
+    @objc func playMusic(_ sender: UIButton) {
+        if viewModel.isPlay {
+            let playUI = UIImage(systemName: "play.fill", withConfiguration: imageConfig)
+            sender.setImage(playUI, for: .normal)
+            viewModel.pauseMusic()
+        } else {
+            let pauseUI = UIImage(systemName: "pause.fill", withConfiguration: imageConfig)
+            sender.setImage(pauseUI, for: .normal)
+            viewModel.playMusic()
+        }
+        sender.isSelected = viewModel.isPlay
     }
     
     func configureUI() {
@@ -117,17 +155,30 @@ class PlayViewController: UIViewController {
 
         view.addSubview(timeLblStack)
         timeLblStack.anchor(top: slider.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 20, paddingRight: 20)
+        
+        view.addSubview(playButton)
+        playButton.centerX(inView: view)
+        playButton.anchor(top: timeLblStack.bottomAnchor, paddingTop: 30)
     }
     
     func configure() {
-        self.titleLabel.text = viewModel.title
-        self.albumLabel.text = viewModel.album
-        self.singerLabel.text = viewModel.singer
-        self.imageView.image = viewModel.image
-        self.lyricsLabel.text = viewModel.lyrics
-        self.currentTimeLbl.text = "00:00"
-        self.durationLbl.text = viewModel.getTime(time: Double(viewModel.duration))
+        titleLabel.text = viewModel.title
+        albumLabel.text = viewModel.album
+        singerLabel.text = viewModel.singer
+        imageView.image = viewModel.image
+        lyricsLabel.text = viewModel.lyrics
+        currentTimeLbl.text = "00:00"
+        slider.maximumValue = Float(viewModel.duration)
+        durationLbl.text = viewModel.getTime(time: Double(viewModel.duration))
+        
         viewModel.classifyLyrics()
+        viewModel.playMusic()
+    }
+}
+
+extension PlayViewController {
+    func initMusic() {
+        self.viewModel.getMusicData(urlStr: viewModel.fileUrl)
     }
     
     func setupBinders() {
@@ -135,7 +186,19 @@ class PlayViewController: UIViewController {
         viewModel.music.bind { music in
             DispatchQueue.main.async {
                 self.configure()
+                self.initMusic()
             }
         }
+    }
+    
+    func addObserverToPlayer() {
+        viewModel.player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: DispatchQueue.main) { time in
+            self.updateTime(time: time)
+        }
+    }
+    
+    func updateTime(time: CMTime) {
+        slider.value = Float(viewModel.currentValue)
+        currentTimeLbl.text = viewModel.currentTimeText
     }
 }
