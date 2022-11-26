@@ -50,6 +50,7 @@ class PlayViewController: UIViewController {
         label.sizeToFit()
         label.font = .systemFont(ofSize: 16)
         label.textColor = .lightGray
+        label.textAlignment = .center
         return label
     }()
     
@@ -93,12 +94,13 @@ class PlayViewController: UIViewController {
         view.backgroundColor = .white
         configureUI()
         setupBinders()
+        viewModel.playMusic()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        addObserverToPlayer()
-//        playButton.isSelected = viewModel.isPlay
+        addObserver()
+        //        playButton.isSelected = viewModel.isPlay
     }
     
     // UISlider
@@ -152,7 +154,7 @@ class PlayViewController: UIViewController {
         
         let timeLblStack = UIStackView(arrangedSubviews: [currentTimeLbl, durationLbl])
         timeLblStack.distribution = .fillEqually
-
+        
         view.addSubview(timeLblStack)
         timeLblStack.anchor(top: slider.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 20, paddingRight: 20)
         
@@ -166,13 +168,9 @@ class PlayViewController: UIViewController {
         albumLabel.text = viewModel.album
         singerLabel.text = viewModel.singer
         imageView.image = viewModel.image
-        lyricsLabel.text = viewModel.lyrics
         currentTimeLbl.text = "00:00"
         slider.maximumValue = Float(viewModel.duration)
         durationLbl.text = viewModel.getTime(time: Double(viewModel.duration))
-        
-        viewModel.classifyLyrics()
-        viewModel.playMusic()
     }
 }
 
@@ -182,17 +180,17 @@ extension PlayViewController {
     }
     
     func setupBinders() {
-        viewModel.fetchMusic()
         viewModel.music.bind { music in
             DispatchQueue.main.async {
                 self.configure()
                 self.initMusic()
             }
         }
+        viewModel.fetchMusic()
     }
     
-    func addObserverToPlayer() {
-        viewModel.player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: DispatchQueue.main) { time in
+    func addObserver() {
+        viewModel.player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: DispatchQueue.main) { time in
             self.updateTime(time: time)
         }
     }
@@ -200,5 +198,13 @@ extension PlayViewController {
     func updateTime(time: CMTime) {
         slider.value = Float(viewModel.currentValue)
         currentTimeLbl.text = viewModel.currentTimeText
+        let index = viewModel.getCurrentLyricsIndex()
+        lyricsLabel.text = "\(viewModel.lyricsArray[index])\n\(viewModel.lyricsArray[index + 1])"
+        if index >= 1 {
+            let attribtuedString = NSMutableAttributedString(string: lyricsLabel.text ?? "")
+            let range = (lyricsLabel.text! as NSString).range(of: "\(viewModel.lyricsArray[index])")
+            attribtuedString.addAttribute(.foregroundColor, value: UIColor.black, range: range)
+            lyricsLabel.attributedText = attribtuedString
+        }
     }
 }

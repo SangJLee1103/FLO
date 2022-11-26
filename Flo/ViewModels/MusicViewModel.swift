@@ -83,8 +83,7 @@ class MusicViewModel {
     
     
     func classifyLyrics() {
-        var lyricsArr = self.lyrics.split(separator: "\n").map{String($0)}
-        
+        let lyricsArr = self.lyrics.split(separator: "\n").map{String($0)}
         for lyrics in lyricsArr {
             let lyricsStart = lyrics.index(lyrics.startIndex, offsetBy: 11)
             
@@ -95,7 +94,9 @@ class MusicViewModel {
             let dictKey = (Int(minutes) ?? 0) * 60 + (Int(seconds) ?? 0)
             lyricsDict[dictKey] = onlyLyrics
         }
-        lyricsArr = lyricsDict.sorted { $0.key < $1.key}.map { $0.value }
+        lyricsDict[0] = lyricsDict.sorted { $0.key < $1.key}.map { $0.value }.first
+        lyricsDict[duration] = lyricsDict.sorted { $0.key < $1.key}.map { $0.value }.last
+        lyricsArray = lyricsDict.sorted { $0.key < $1.key}.map { $0.value }
     }
     
     // 분:초 치환 함수
@@ -103,6 +104,28 @@ class MusicViewModel {
         let minute: Int = Int(time / 60)
         let second: Int = Int(time.truncatingRemainder(dividingBy: 60))
         return String(format: "%02ld:%02ld", minute, second)
+    }
+    
+    
+    func getCurrentLyricsIndex() -> Int {
+        let currentTime = Int(currentValue)
+        let times = lyricsDict.keys.sorted()
+        let index = binarySearch(times, currentTime) - 1
+        return index
+    }
+    
+    func binarySearch(_ array: [Int], _ target: Int) -> Int {
+        var start = 0
+        var end = array.count - 1
+        while start < end {
+            let mid = (start + end) / 2
+            if target < array[mid] {
+                end = mid
+            } else {
+                start = mid + 1
+            }
+        }
+        return start
     }
 }
 
@@ -133,7 +156,6 @@ extension MusicViewModel {
     func seek(_ time: CMTime) {
         player.seek(to: time)
     }
-    
     
     func addPeriodicTimeObserver(forInterver: CMTime, queue: DispatchQueue?, using: @escaping(CMTime) -> Void) -> Any {
         player.addPeriodicTimeObserver(forInterval: forInterver, queue: queue, using: using)
