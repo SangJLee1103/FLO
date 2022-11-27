@@ -29,7 +29,7 @@ class PlayViewController: UIViewController {
         return label
     }()
     
-    private let singerLabel: UILabel = {
+    private let artistLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         label.font = .systemFont(ofSize: 16)
@@ -44,13 +44,17 @@ class PlayViewController: UIViewController {
         return iv
     }()
     
-    private let lyricsLabel: UILabel = {
+    private lazy var lyricsLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
         label.sizeToFit()
         label.font = .systemFont(ofSize: 16)
         label.textColor = .lightGray
         label.textAlignment = .center
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(moveLyricsVC))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tap)
         return label
     }()
     
@@ -82,9 +86,6 @@ class PlayViewController: UIViewController {
     private let playButton: UIButton = {
         let button = UIButton()
         button.tintColor = .black
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 30)
-        let image = UIImage(systemName: "pause.fill", withConfiguration: imageConfig)
-        button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(playMusic), for: .touchUpInside)
         return button
     }()
@@ -92,15 +93,75 @@ class PlayViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        viewModel.playMusic()
         configureUI()
         setupBinders()
-        viewModel.playMusic()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         addObserver()
-        //        playButton.isSelected = viewModel.isPlay
+        let image = viewModel.isPlay ? UIImage(systemName: "pause.fill", withConfiguration: imageConfig) : UIImage(systemName: "play.fill", withConfiguration: imageConfig)
+        playButton.setImage(image, for: .normal)
+    }
+    
+    func configureUI() {
+        view.addSubview(titleLabel)
+        titleLabel.centerX(inView: view)
+        titleLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor)
+        
+        view.addSubview(albumLabel)
+        albumLabel.centerX(inView: view)
+        albumLabel.anchor(top: titleLabel.bottomAnchor, paddingTop: 3)
+        
+        view.addSubview(artistLabel)
+        artistLabel.centerX(inView: view)
+        artistLabel.anchor(top: albumLabel.bottomAnchor, paddingTop: 3)
+        
+        view.addSubview(imageView)
+        imageView.anchor(top: artistLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 10, paddingLeft: 50, paddingRight: 50 , height: view.frame.width - 100)
+        
+        view.addSubview(lyricsLabel)
+        lyricsLabel.anchor(top: imageView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 20, paddingLeft: 50, paddingRight: 50, height: 40)
+        
+        view.addSubview(slider)
+        slider.anchor(top: lyricsLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 20, paddingRight: 20)
+        
+        
+        let timeLblStack = UIStackView(arrangedSubviews: [currentTimeLbl, durationLbl])
+        timeLblStack.distribution = .fillEqually
+        
+        view.addSubview(timeLblStack)
+        timeLblStack.anchor(top: slider.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 20, paddingRight: 20)
+        
+        view.addSubview(playButton)
+        playButton.centerX(inView: view)
+        playButton.anchor(top: timeLblStack.bottomAnchor, paddingTop: 30)
+        
+    }
+    
+    func configure() {
+        titleLabel.text = viewModel.title
+        albumLabel.text = viewModel.album
+        artistLabel.text = viewModel.singer
+        imageView.image = viewModel.image
+        currentTimeLbl.text = "00:00"
+        slider.maximumValue = Float(viewModel.duration)
+        durationLbl.text = viewModel.getTime(time: Double(viewModel.duration))
+    }
+}
+
+// MARK: - 뷰 터치 이벤트에 대한 확장
+extension PlayViewController {
+    // 전체 가사 보기 화면 이동
+    @objc func moveLyricsVC(_ gesture: UITapGestureRecognizer) {
+        let lyricsVC = LyricsViewController()
+        lyricsVC.modalPresentationStyle = .fullScreen
+        lyricsVC.viewModel = viewModel
+        lyricsVC.musicTitle = titleLabel.text
+        lyricsVC.artist = artistLabel.text
+        lyricsVC.imageConfig = imageConfig
+        self.present(lyricsVC, animated: true)
     }
     
     // UISlider
@@ -128,50 +189,6 @@ class PlayViewController: UIViewController {
         }
         sender.isSelected = viewModel.isPlay
     }
-    
-    func configureUI() {
-        view.addSubview(titleLabel)
-        titleLabel.centerX(inView: view)
-        titleLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor)
-        
-        view.addSubview(albumLabel)
-        albumLabel.centerX(inView: view)
-        albumLabel.anchor(top: titleLabel.bottomAnchor, paddingTop: 3)
-        
-        view.addSubview(singerLabel)
-        singerLabel.centerX(inView: view)
-        singerLabel.anchor(top: albumLabel.bottomAnchor, paddingTop: 3)
-        
-        view.addSubview(imageView)
-        imageView.anchor(top: singerLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 10, paddingLeft: 50, paddingRight: 50 , height: view.frame.width - 100)
-        
-        view.addSubview(lyricsLabel)
-        lyricsLabel.anchor(top: imageView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 20, paddingLeft: 50, paddingRight: 50, height: 40)
-        
-        view.addSubview(slider)
-        slider.anchor(top: lyricsLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 20, paddingRight: 20)
-        
-        
-        let timeLblStack = UIStackView(arrangedSubviews: [currentTimeLbl, durationLbl])
-        timeLblStack.distribution = .fillEqually
-        
-        view.addSubview(timeLblStack)
-        timeLblStack.anchor(top: slider.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 20, paddingRight: 20)
-        
-        view.addSubview(playButton)
-        playButton.centerX(inView: view)
-        playButton.anchor(top: timeLblStack.bottomAnchor, paddingTop: 30)
-    }
-    
-    func configure() {
-        titleLabel.text = viewModel.title
-        albumLabel.text = viewModel.album
-        singerLabel.text = viewModel.singer
-        imageView.image = viewModel.image
-        currentTimeLbl.text = "00:00"
-        slider.maximumValue = Float(viewModel.duration)
-        durationLbl.text = viewModel.getTime(time: Double(viewModel.duration))
-    }
 }
 
 extension PlayViewController {
@@ -190,7 +207,7 @@ extension PlayViewController {
     }
     
     func addObserver() {
-        viewModel.player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: DispatchQueue.main) { time in
+        viewModel.player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 100), queue: DispatchQueue.main) { time in
             self.updateTime(time: time)
         }
     }

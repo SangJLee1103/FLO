@@ -17,6 +17,7 @@ class MusicViewModel {
     var image: UIImage
     var lyricsDict: [Int: String]
     var lyricsArray: [String]
+    var prevLyricsIndex: Int
     
     
     var title: String {
@@ -43,7 +44,6 @@ class MusicViewModel {
         return music.value.lyrics
     }
     
-    
     var currentTime: CMTime {
         return player.currentItem?.currentTime() ?? CMTime.zero
     }
@@ -56,15 +56,14 @@ class MusicViewModel {
         return getTime(time: currentValue)
     }
     
-    
     init() {
         self.music = ObservableObject(Music.initialize)
         self.image = UIImage()
         self.lyricsDict = [Int: String]()
         self.lyricsArray = [String]()
         self.isPlay = false
+        self.prevLyricsIndex = -1
     }
-    
     
     func fetchMusic() {
         MusicService.getMusic { response in
@@ -80,7 +79,6 @@ class MusicViewModel {
             }
         }
     }
-    
     
     func classifyLyrics() {
         let lyricsArr = self.lyrics.split(separator: "\n").map{String($0)}

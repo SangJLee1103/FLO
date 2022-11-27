@@ -20,6 +20,7 @@
 		F405C561292B71FC00100735 /* MusicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C560292B71FC00100735 /* MusicViewModel.swift */; };
 		F405C563292CB37B00100735 /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C562292CB37B00100735 /* ObservableObject.swift */; };
 		F405C566292CFA4D00100735 /* ImageUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C565292CFA4D00100735 /* ImageUtil.swift */; };
+		F473173229324BCB00E8E4EF /* LyricsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F473173129324BCB00E8E4EF /* LyricsCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		F405C560292B71FC00100735 /* MusicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicViewModel.swift; sourceTree = "<group>"; };
 		F405C562292CB37B00100735 /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
 		F405C565292CFA4D00100735 /* ImageUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtil.swift; sourceTree = "<group>"; };
+		F473173129324BCB00E8E4EF /* LyricsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 		F405C55D292A1CE700100735 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F473173129324BCB00E8E4EF /* LyricsCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 				F405C53D292A0D4800100735 /* SceneDelegate.swift in Sources */,
 				F405C557292A152700100735 /* Extension.swift in Sources */,
 				F405C563292CB37B00100735 /* ObservableObject.swift in Sources */,
+				F473173229324BCB00E8E4EF /* LyricsCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
