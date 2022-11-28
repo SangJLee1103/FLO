@@ -5,7 +5,7 @@ https://school.programmers.co.kr/skill_check_assignments/2
 ## 목차
   - ### 화면구성
   - ### 프레임워크
-  - ### 
+  - ### 사용기술
 
 
 
