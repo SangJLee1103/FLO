@@ -24,7 +24,7 @@ https://school.programmers.co.kr/skill_check_assignments/2
 
 
 ## 사용기술
-![다운로드](https://user-images.githubusercontent.com/76645463/204228015-e0fd779b-d2ae-4ffd-adbb-49e1414cc61f.png)
+<img src="https://user-images.githubusercontent.com/76645463/204228015-e0fd779b-d2ae-4ffd-adbb-49e1414cc61f.png  width="200" height="400"/>
 
 - **MVVM 디자인패턴**
   - Observable 객체를 생성하여 변화하는 값에 대해 관찰하도록 하여, **데이터바인딩**을 구현하였습니다.
