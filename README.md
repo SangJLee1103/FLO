@@ -4,8 +4,11 @@ https://school.programmers.co.kr/skill_check_assignments/2
 
 <img src="https://img.shields.io/badge/Swift-orange?style=flat-square&logo=Swift&logoColor=white"/>
 
+<p align="center">
+  https://user-images.githubusercontent.com/76645463/204234992-7e65e83b-e556-4f89-94fb-a57d1f347545.mov
+</p>
 
-<center>https://user-images.githubusercontent.com/76645463/204234992-7e65e83b-e556-4f89-94fb-a57d1f347545.mov</center>
+<img src="https://user-images.githubusercontent.com/76645463/204215310-09b6fa9a-4ad8-4828-a340-7ab67ec73b7b.png" width="300" height="650">  <img src="https://user-images.githubusercontent.com/76645463/204215318-434774a0-3c53-4346-9cc0-ca166dc70821.png" width="300" height="650">
 
 ## 화면구성
 
