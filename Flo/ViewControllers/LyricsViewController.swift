@@ -59,11 +59,21 @@ class LyricsViewController: UIViewController {
         return button
     }()
     
+    private let toggleButton: UIButton = {
+        let button = UIButton()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 25)
+        button.setImage(UIImage(systemName: "scope", withConfiguration: imageConfig), for: .normal)
+        button.tintColor = #colorLiteral(red: 0.1411764706, green: 0.01176470611, blue: 0.8360022396, alpha: 1)
+        button.addTarget(self, action: #selector(clickToggle), for: .touchUpInside)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         configureTableView()
         configureUI()
+        lyricsTableView.reloadData()
         updateTime(time: viewModel.currentTime)
     }
     
@@ -78,6 +88,7 @@ class LyricsViewController: UIViewController {
         
         lyricsTableView.register(LyricsCell.self, forCellReuseIdentifier: reuseIdentifier)
         lyricsTableView.rowHeight = 30
+        lyricsTableView.separatorStyle = .none
     }
     
     func configureUI() {
@@ -86,14 +97,18 @@ class LyricsViewController: UIViewController {
         
         topView.addSubview(titleLabel)
         titleLabel.anchor(top: topView.topAnchor, left: topView.leftAnchor, paddingTop: 15, paddingLeft: 20)
-        titleLabel.text = "\(musicTitle)\n\(artist)"
+        titleLabel.text = "\(musicTitle ?? "")\n\(artist ?? "")"
         
         topView.addSubview(closeButton)
         closeButton.anchor(top: topView.topAnchor, right: topView.rightAnchor, paddingTop: 15, paddingRight: 20)
         
         
         view.addSubview(lyricsTableView)
-        lyricsTableView.anchor(top: topView.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor ,right: view.rightAnchor, paddingTop: 15, paddingLeft: 0, paddingBottom: 100, paddingRight: 0)
+        lyricsTableView.anchor(top: topView.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor ,right: view.rightAnchor, paddingTop: 15, paddingLeft: 0, paddingBottom: 100, paddingRight: 40)
+        
+        view.addSubview(toggleButton)
+        toggleButton.centerY(inView: view)
+        toggleButton.anchor(right: view.rightAnchor, paddingRight: 15)
         
         view.addSubview(slider)
         slider.anchor(top: lyricsTableView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 20, paddingLeft: 20, paddingRight: 20)
@@ -110,8 +125,16 @@ class LyricsViewController: UIViewController {
 
 // MARK: - 뷰 터치 이벤트에 대한 확장
 extension LyricsViewController {
+    
+    // 상단 X 버튼 클릭시 이벤트
     @objc func dismissVC(_ sender: UIButton) {
         self.dismiss(animated: true)
+    }
+    
+    // 토클 버튼 클릭시 이벤트
+    @objc func clickToggle(_ sender: UIButton) {
+        toggleButton.isSelected.toggle()
+        toggleButton.tintColor = .darkGray
     }
     
     // 음악 재생 버튼 클릭시 이벤트
@@ -148,8 +171,20 @@ extension LyricsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! LyricsCell
+        cell.selectionStyle = .none
         cell.setLyrics(text: viewModel.lyricsArray[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if toggleButton.isSelected {
+            let clickLyricsIndex = viewModel.lyricsDict.sorted { $0.key < $1.key }[indexPath.row].key
+            let time = CMTime(seconds: Double(clickLyricsIndex), preferredTimescale: 100)
+            viewModel.player.seek(to: time)
+            updateTime(time: time)
+        } else {
+            self.dismiss(animated: true)
+        }
     }
 }
 
@@ -181,7 +216,6 @@ extension LyricsViewController {
         
         guard prevIndex >= 0 else { return }
         let prevIndexPath = IndexPath(row: prevIndex, section: 0)
-        
         if let prevLyricsCell = lyricsTableView.cellForRow(at: prevIndexPath) as? LyricsCell {
             prevLyricsCell.resetCurrentLyricsUI()
         }

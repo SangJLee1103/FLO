@@ -104,7 +104,7 @@ class MusicViewModel {
         return String(format: "%02ld:%02ld", minute, second)
     }
     
-    
+    // 현재 가사 인덱스 리턴 함수
     func getCurrentLyricsIndex() -> Int {
         let currentTime = Int(currentValue)
         let times = lyricsDict.keys.sorted()
@@ -112,6 +112,7 @@ class MusicViewModel {
         return index
     }
     
+    // 현재 가사 인덱스 탐색 함수
     func binarySearch(_ array: [Int], _ target: Int) -> Int {
         var start = 0
         var end = array.count - 1

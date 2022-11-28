@@ -29,6 +29,11 @@ class LyricsCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        resetCurrentLyricsUI()
+    }
+       
+    
     func setLyrics(text: String) {
         lyricsLabel.text = text
     }
@@ -37,7 +42,7 @@ class LyricsCell: UITableViewCell {
         lyricsLabel.textColor = .black
         lyricsLabel.font = UIFont.boldSystemFont(ofSize: 16)
     }
-    
+
     func resetCurrentLyricsUI() {
         lyricsLabel.textColor = .lightGray
         lyricsLabel.font = UIFont.systemFont(ofSize: 16)

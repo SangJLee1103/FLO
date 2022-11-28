@@ -167,8 +167,8 @@ extension PlayViewController {
     // UISlider
     @objc func moveSlider(_ sender: UISlider) {
         let seconds = Double(sender.value)
-        
         currentTimeLbl.text = viewModel.currentTimeText
+        
         if sender.isTracking {
             return
         } else {
@@ -216,6 +216,7 @@ extension PlayViewController {
         slider.value = Float(viewModel.currentValue)
         currentTimeLbl.text = viewModel.currentTimeText
         let index = viewModel.getCurrentLyricsIndex()
+        print(index)
         lyricsLabel.text = "\(viewModel.lyricsArray[index])\n\(viewModel.lyricsArray[index + 1])"
         if index >= 1 {
             let attribtuedString = NSMutableAttributedString(string: lyricsLabel.text ?? "")
