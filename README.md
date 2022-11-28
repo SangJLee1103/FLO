@@ -22,7 +22,7 @@ https://school.programmers.co.kr/skill_check_assignments/2
   - Play/Stop 버튼
 
 ## 사용기술
-<img src="https://user-images.githubusercontent.com/76645463/204224741-8919b176-c255-45a7-a2eb-3dd902b4220a.png" width:"600", height="300">
+<img src="https://user-images.githubusercontent.com/76645463/204224741-8919b176-c255-45a7-a2eb-3dd902b4220a.png" width:"600" height="300">
 
 
 - MVVM 디자인패턴
