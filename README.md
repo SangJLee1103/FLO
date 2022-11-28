@@ -22,6 +22,8 @@ https://school.programmers.co.kr/skill_check_assignments/2
   - Play/Stop 버튼
 
 ## 사용기술
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/MVVMPattern.png/500px-MVVMPattern.png?" width: "600", height="300">
+<img src="[https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/MVVMPattern.png/500px-MVVMPattern.png?](https://user-images.githubusercontent.com/76645463/204224425-7a2c95a4-66e2-4505-aa84-95f8729c1938.png)" width: "600", height="300">
+
+
 - MVVM 디자인패턴
   - Observable 객체를 생성하여 변화하는 값에 대해 관찰하도록 하여, 데이터바인딩을 구현하였습니다.
