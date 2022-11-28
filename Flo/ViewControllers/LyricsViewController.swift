@@ -188,6 +188,7 @@ extension LyricsViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+// MARK: - 음악이 재생됨에 따른 UI 변경에 대한 확장
 extension LyricsViewController {
     func addObserver() {
         viewModel.player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 100), queue: DispatchQueue.main) { time in
