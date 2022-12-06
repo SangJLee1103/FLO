@@ -6,6 +6,7 @@ https://school.programmers.co.kr/skill_check_assignments/2
   - ### 화면구성
   - ### 프레임워크
   - ### 사용기술
+  - ### 참고자료
 
 
 
@@ -37,3 +38,5 @@ https://user-images.githubusercontent.com/76645463/204234992-7e65e83b-e556-4f89-
   <br>![다운로드](https://user-images.githubusercontent.com/76645463/204228565-b6f46f4a-59f0-4d9c-80d1-496d61f7102c.png)<br>
   - Observable 객체를 생성하여 변화하는 값에 대해 관찰하도록 하여, **데이터바인딩**을 구현하였습니다.
 
+## 참고자료 
+https://www.youtube.com/watch?v=sLHVxnRS75w&t=1952s (Observable Object 부분 및 MVVM 패턴)
